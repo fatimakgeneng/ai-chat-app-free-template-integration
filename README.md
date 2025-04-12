@@ -58,7 +58,7 @@ A QR code like this will appear 👇, first install the Expo Go app from playsto
 ## UI Templates
 1. NativeBase<br>
 2. Dribble<br>
-3. ifted Chat<br>
+3. Gifted Chat<br>
 4. UI8 Free Kits<br>
 5. Figma<br>
 
