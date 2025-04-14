@@ -61,4 +61,3 @@ A QR code like this will appear 👇, first install the Expo Go app from playsto
 3. Gifted Chat<br>
 4. UI8 Free Kits<br>
 5. Figma<br>
-

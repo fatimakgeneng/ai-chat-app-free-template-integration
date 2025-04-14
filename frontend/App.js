@@ -1,101 +1,107 @@
 import React, { useState, useRef } from 'react';
-import { KeyboardAvoidingView, Platform } from 'react-native';
 import {
-  NativeBaseProvider,
-  Box,
-  HStack,
-  VStack,
+  View,
   Text,
-  Avatar,
-  IconButton,
-  Icon,
+  TextInput,
+  TouchableOpacity,
   ScrollView,
-  Spinner,
-  Input
-} from 'native-base';
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator
+} from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
-// Memoized ChatHeader to prevent unnecessary re-renders
 const ChatHeader = React.memo(() => (
-  <HStack bg="#003366" px={4} py={3} alignItems="center">
-    <Avatar source={require('./assets/—Pngtree—future intelligent technology robot ai_5766888.png')} />
-    <VStack ml={3}>
-      <Text color="white" fontSize="md" bold>
-        AI Assistant
-      </Text>
-      <Text color="gray.200" fontSize="xs">
-        Online
-      </Text>
-    </VStack>
-    <IconButton
-      ml="auto"
-      icon={<Icon as={MaterialIcons} name="expand-more" color="white" />}
-      onPress={() => {}}
+  <View style={{
+    flexDirection: 'row',
+    backgroundColor: '#003366',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    alignItems: 'center',
+  }}>
+    <Image
+      source={require('./assets/—Pngtree—future intelligent technology robot ai_5766888.png')}
+      style={{ width: 50, height: 50, borderRadius: 25 }}
     />
-  </HStack>
+    <View style={{ marginLeft: 16 }}>
+      <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>AI Assistant</Text>
+      <Text style={{ color: '#e5e5e5', fontSize: 14 }}>Online</Text>
+    </View>
+    <TouchableOpacity style={{ marginLeft: 'auto' }} onPress={() => {}}>
+      <MaterialIcons name="expand-more" size={28} color="white" />
+    </TouchableOpacity>
+  </View>
 ));
 
 const ChatList = ({ messages, loading, scrollViewRef }) => (
   <ScrollView
     ref={scrollViewRef}
     keyboardShouldPersistTaps="always"
-    keyboardDismissMode="none" // keeps keyboard from dismissing on drag
-    onContentSizeChange={() =>
-      scrollViewRef.current?.scrollToEnd({ animated: true })
-    }
-    style={{ paddingHorizontal: 10, flex: 1 }}
+    onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+    style={{ paddingHorizontal: 12, flex: 1 }}
   >
     {messages.map((msg, i) => (
-      <Box
+      <View
         key={i}
-        bg={msg.sender === 'user' ? '#007AFF' : '#e0e0e0'}
-        alignSelf={msg.sender === 'user' ? 'flex-end' : 'flex-start'}
-        p={3}
-        borderRadius={10}
-        m={1}
-        maxWidth="80%"
+        style={{
+          alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
+          backgroundColor: msg.sender === 'user' ? '#007AFF' : '#e0e0e0',
+          padding: 14,
+          borderRadius: 24,  // Increased for more rounded bubbles
+          marginVertical: 6,
+          marginHorizontal: 8,
+          maxWidth: '80%',
+          transition: 'all 0.3s ease',  // Added transition for smooth hover effect
+        }}
+        onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+        onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
       >
-        <Text color={msg.sender === 'user' ? 'white' : 'black'}>
+        <Text style={{ fontSize: 16, color: msg.sender === 'user' ? 'white' : 'black' }}>
           {msg.text}
         </Text>
-      </Box>
+      </View>
     ))}
-    {loading && <Spinner color="gray.500" size="sm" />}
+    {loading && (
+      <ActivityIndicator size="large" color="gray" style={{ marginTop: 12 }} />
+    )}
   </ScrollView>
 );
 
 const ChatInput = ({ input, setInput, onSend }) => (
-  <HStack
-    p={3}
-    alignItems="center"
-    bg="white"
-    borderTopWidth={1}
-    borderColor="gray.200"
-    space={1.5}
-  >
-    <IconButton
-      icon={<Icon as={MaterialIcons} name="emoji-emotions" />}
-      onPress={() => {}}
-    />
-    <Input
-      flex={1}
-      variant="filled"
+  <View style={{
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderTopWidth: 1,
+    borderColor: '#e0e0e0',
+    backgroundColor: 'white',
+  }}>
+    <TouchableOpacity onPress={() => {}} style={{ padding: 6 }}>
+      <MaterialIcons name="emoji-emotions" size={28} color="gray" />
+    </TouchableOpacity>
+    <TextInput
+      style={{
+        flex: 1,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 24,
+        paddingHorizontal: 18,
+        paddingVertical: 12,
+        marginHorizontal: 10,
+        fontSize: 16,
+      }}
       placeholder="Type your message"
+      placeholderTextColor="#999"
       value={input}
       onChangeText={setInput}
-      bg="gray.100"
-      borderRadius={20}
-      px={4}
     />
-    <IconButton
-      icon={<Icon as={MaterialIcons} name="attach-file" />}
-      onPress={() => {}}
-    />
-    <IconButton
-      icon={<Icon as={MaterialIcons} name="send" color="#007AFF" />}
-      onPress={onSend}
-    />
-  </HStack>
+    <TouchableOpacity onPress={() => {}} style={{ padding: 6 }}>
+      <MaterialIcons name="attach-file" size={28} color="gray" />
+    </TouchableOpacity>
+    <TouchableOpacity onPress={onSend} style={{ padding: 6 }}>
+      <MaterialIcons name="send" size={28} color="#007AFF" />
+    </TouchableOpacity>
+  </View>
 );
 
 export default function App() {
@@ -104,7 +110,6 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const scrollViewRef = useRef(null);
 
-  // Function to send message
   const sendMessage = async () => {
     if (!input.trim()) return;
 
@@ -130,17 +135,15 @@ export default function App() {
   };
 
   return (
-    <NativeBaseProvider>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <Box safeArea flex={1} bg="#f5f5f5">
-          <ChatHeader />
-          <ChatList messages={messages} loading={loading} scrollViewRef={scrollViewRef} />
-          <ChatInput input={input} setInput={setInput} onSend={sendMessage} />
-        </Box>
-      </KeyboardAvoidingView>
-    </NativeBaseProvider>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
+        <ChatHeader />
+        <ChatList messages={messages} loading={loading} scrollViewRef={scrollViewRef} />
+        <ChatInput input={input} setInput={setInput} onSend={sendMessage} />
+      </View>
+    </KeyboardAvoidingView>
   );
 }
